@@ -33,3 +33,12 @@ depends: [
   "alcotest-lwt" {with-test}
 ]
 build: [["dune" "build" "-p" name "-j" jobs]]
+
+# opam does not apply pin-depends transitively: pinning cometbft does not pin
+# what cometbft's own pin-depends name. So each package names its whole sibling
+# closure, not just its direct edges, or resolution fails with
+#   cometbft -> cometbft-proto unknown package
+pin-depends: [
+  [ "cometbft.dev" "git+https://github.com/reuna-labs/ocaml-cometbft.git#main" ]
+  [ "cometbft-proto.dev" "git+https://github.com/reuna-labs/ocaml-cometbft.git#main" ]
+]

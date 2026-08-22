@@ -30,3 +30,19 @@ depends: [
   "alcotest" {with-test}
 ]
 build: [["dune" "build" "-p" name "-j" jobs]]
+
+# opam does not apply pin-depends transitively: pinning cometbft does not pin
+# what cometbft's own pin-depends name. So each package names its whole sibling
+# closure, not just its direct edges, or resolution fails with
+#   cometbft -> cometbft-proto unknown package
+pin-depends: [
+  [ "cometbft.dev" "git+https://github.com/reuna-labs/ocaml-cometbft.git#main" ]
+  [ "cometbft-proto.dev" "git+https://github.com/reuna-labs/ocaml-cometbft.git#main" ]
+  [ "cometbft-lwt.dev" "git+https://github.com/reuna-labs/ocaml-cometbft.git#main" ]
+  [ "cometbft-grpc.dev" "git+https://github.com/reuna-labs/ocaml-cometbft.git#main" ]
+  # The released grpc.0.2.0 caps h2 < 0.13.0; see the note above. This was
+  # a comment telling the reader to run `opam pin add` by hand, which meant
+  # every consumer had to know. Now it resolves on its own.
+  [ "grpc.0.2.0" "git+https://github.com/dialohq/ocaml-grpc.git#b629b55fc15964c5e9455058725519d3f7cfc9a7" ]
+  [ "grpc-lwt.0.2.0" "git+https://github.com/dialohq/ocaml-grpc.git#b629b55fc15964c5e9455058725519d3f7cfc9a7" ]
+]
