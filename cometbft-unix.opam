@@ -13,9 +13,9 @@ Listens on TCP or a Unix domain socket, matching CometBFT's proxy_app settings
 maintainer: ["gilbahat"]
 authors: ["gilbahat"]
 license: "ISC"
-homepage: "https://github.com/reuna147/ocaml-cometbft"
-bug-reports: "https://github.com/reuna147/ocaml-cometbft/issues"
-dev-repo: "git+https://github.com/reuna147/ocaml-cometbft.git"
+homepage: "https://github.com/reuna-labs/ocaml-cometbft"
+bug-reports: "https://github.com/reuna-labs/ocaml-cometbft/issues"
+dev-repo: "git+https://github.com/reuna-labs/ocaml-cometbft.git"
 depends: [
   "ocaml" {>= "4.14"}
   "dune" {>= "3.0"}
