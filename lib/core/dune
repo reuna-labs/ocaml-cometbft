@@ -1,0 +1,9 @@
+; The protocol core: no I/O, no scheduler, no unix. Everything here is a pure
+; function or a state machine the transport adapters drive, which is what lets
+; the same code serve Unix sockets and a Solo5 unikernel, and lets the test
+; suite exercise dispatch with the identity monad and no scheduler at all.
+
+(library
+ (name cometbft)
+ (public_name cometbft)
+ (libraries cometbft-proto cstruct logs fmt))

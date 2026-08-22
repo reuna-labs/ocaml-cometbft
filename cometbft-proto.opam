@@ -1,0 +1,34 @@
+opam-version: "2.0"
+synopsis: "Generated OCaml bindings for the CometBFT ABCI protobuf types"
+description: """
+Protobuf types for the `tendermint.abci` package, generated with
+ocaml-protoc-plugin from the .proto tree vendored at proto/ (pinned to CometBFT
+v0.40.0).
+
+The generated sources are committed to the repository, so building this package
+does NOT require protoc or the ocaml-protoc-plugin binary. Run ./gen.sh to
+regenerate them after bumping the vendored protos.
+
+Depends only on base64 and ptime, and in particular NOT on unix, so it links
+into a MirageOS/Solo5 unikernel.
+
+The ocaml-protoc-plugin *runtime* is vendored under lib/proto/runtime rather
+than depended on as a package: the package needs ppx_expect, ppx_inline_test,
+omd and conf-protoc to build its code generator, and that cone defeats
+opam-monorepo, which a unikernel build relies on. See lib/proto/runtime/README.md.
+The plugin is still what generates the bindings -- it is just not a runtime
+dependency.
+"""
+maintainer: ["gilbahat"]
+authors: ["gilbahat"]
+license: "ISC"
+homepage: "https://github.com/reuna147/ocaml-cometbft"
+bug-reports: "https://github.com/reuna147/ocaml-cometbft/issues"
+dev-repo: "git+https://github.com/reuna147/ocaml-cometbft.git"
+depends: [
+  "ocaml" {>= "4.14"}
+  "dune" {>= "3.0"}
+  "base64" {>= "3.1.0"}
+  "ptime"
+]
+build: [["dune" "build" "-p" name "-j" jobs]]

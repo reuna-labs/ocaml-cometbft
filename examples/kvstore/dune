@@ -1,0 +1,14 @@
+; A runnable ABCI application: the smallest thing a real CometBFT node will
+; drive to produce blocks. Used by the end-to-end test in test/e2e.sh.
+
+(executable
+ (name main)
+ (libraries
+  cometbft
+  cometbft-proto
+  cometbft-unix
+  lwt
+  lwt.unix
+  logs
+  logs.fmt
+  fmt))

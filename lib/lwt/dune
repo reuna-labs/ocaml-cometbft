@@ -1,0 +1,11 @@
+; The ABCI socket transport -- CometBFT's default -- functorised over
+; Mirage_flow.S rather than bound to a socket API. That is what lets one
+; implementation serve both a Unix process (see cometbft-unix, which supplies
+; mirage-flow-unix) and a Solo5 unikernel (which supplies its Tcpip stack).
+; Nothing here may depend on unix. The gRPC transport lives in cometbft-grpc so
+; that a socket-only unikernel does not link the HTTP/2 stack.
+
+(library
+ (name cometbft_lwt)
+ (public_name cometbft-lwt)
+ (libraries cometbft cometbft-proto lwt cstruct mirage-flow logs fmt))

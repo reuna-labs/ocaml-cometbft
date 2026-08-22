@@ -1,0 +1,23 @@
+; The generated protobuf bindings, the hand-written Gogo stub they refer to, and
+; a vendored copy of the ocaml-protoc-plugin runtime (see runtime/README.md for
+; why the runtime is vendored rather than depended on -- in short, the package's
+; build dependencies make opam-monorepo vendoring impossible, so a unikernel
+; could not be built at all).
+;
+; include_subdirs flattens gen/, gen/google_types/ and runtime/ into this one
+; library, which is what makes the cross-file references the plugin emits --
+; Timestamp.Google.Protobuf.Timestamp, and Runtime' = Ocaml_protoc_plugin --
+; resolve without qualification.
+
+(include_subdirs unqualified)
+
+(library
+ (name cometbft_proto)
+ (public_name cometbft-proto)
+ ; Neither the generated code nor the vendored runtime is ours to lint. The dev
+ ; profile promotes warnings to errors, and both trip several by design.
+ (flags
+  (:standard -w -a))
+ ; base64 and ptime are the whole runtime. Note the absence of unix: this
+ ; package is linked into Solo5 unikernels, so that must stay true.
+ (libraries base64 ptime))

@@ -1,0 +1,8 @@
+; test/golden holds the Go generator for the wire vectors; the .golden files
+; are still usable as test dependencies.
+;
+; mirage-smoke is NOT excluded here: `mirage configure` needs to build its
+; config.exe in this dune root, which is also how the unikernel picks up the
+; cometbft libraries from lib/ without them having to be published. It is built
+; only through its own generated dune-workspace, never by `dune build` at the
+; root -- see mirage-smoke/README.md.

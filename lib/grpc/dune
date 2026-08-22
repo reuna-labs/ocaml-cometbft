@@ -1,0 +1,9 @@
+; Kept out of cometbft-lwt on purpose. An application that speaks only the
+; native ABCI socket transport -- CometBFT's default, and what a unikernel is
+; most likely to want -- should not have to link h2, hpack, angstrom and
+; faraday to get there.
+
+(library
+ (name cometbft_grpc)
+ (public_name cometbft-grpc)
+ (libraries cometbft cometbft-proto lwt logs fmt h2 grpc grpc-lwt))

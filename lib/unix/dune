@@ -1,0 +1,19 @@
+; The only package in the repository permitted to depend on unix. Everything
+; reusable lives in cometbft / cometbft-lwt; this is just the accept loop and
+; address parsing that a Solo5 unikernel would supply differently.
+
+(library
+ (name cometbft_unix)
+ (public_name cometbft-unix)
+ (libraries
+  cometbft
+  cometbft-lwt
+  cometbft-grpc
+  lwt
+  lwt.unix
+  mirage-flow-unix
+  logs
+  fmt
+  h2
+  h2-lwt-unix
+  grpc-lwt))

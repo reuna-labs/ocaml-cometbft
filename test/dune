@@ -1,0 +1,9 @@
+; The golden vectors are produced by CometBFT's own Go encoder -- see
+; golden/README.md -- so these tests check the codec against the real
+; implementation, not just against itself.
+
+(test
+ (name test_cometbft)
+ (deps
+  (glob_files golden/*.golden))
+ (libraries cometbft cometbft-proto cstruct alcotest))

@@ -1,0 +1,1 @@
+include Cometbft_proto.Ocaml_protoc_plugin

@@ -1,0 +1,46 @@
+opam-version: "2.0"
+synopsis: "The ABCI service over gRPC, for CometBFT applications"
+description: """
+Serves tendermint.abci.ABCI as an ordinary gRPC service, for nodes configured
+with abci = "grpc" instead of the default socket transport.
+
+Split out of cometbft-lwt deliberately: gRPC drags in h2, hpack, angstrom and
+faraday, and an application speaking only the native socket transport -- which
+is what CometBFT uses by default, and what a unikernel is most likely to want --
+should not pay for them.
+
+Produces an H2.Reqd.t handler and stops there; supplying the HTTP/2 runtime is
+the caller's job. That is what keeps it usable from a unikernel, via h2-mirage,
+as well as from a Unix process via h2-lwt-unix. Requests run through the same
+dispatcher as the socket transport, so the two cannot drift apart.
+"""
+maintainer: ["gilbahat"]
+authors: ["gilbahat"]
+license: "ISC"
+homepage: "https://github.com/reuna147/ocaml-cometbft"
+bug-reports: "https://github.com/reuna147/ocaml-cometbft/issues"
+dev-repo: "git+https://github.com/reuna147/ocaml-cometbft.git"
+depends: [
+  "ocaml" {>= "4.14"}
+  "dune" {>= "3.0"}
+  "cometbft" {= version}
+  "lwt"
+  "logs"
+  "fmt"
+  "h2" {>= "0.13.0"}
+  "grpc" {>= "0.2.0"}
+  "grpc-lwt" {>= "0.2.0"}
+]
+# NOTE: the released grpc.0.2.0 constrains h2 to < 0.13.0, but h2 and h2-mirage
+# are both at 0.13.0, and h2-mirage is what makes a MirageOS gRPC server
+# possible. The commit lifting the bound ("Make it compiling with H2 v0.13.0",
+# 2025-07-10) is on ocaml-grpc's main branch and has never been released, so
+# until upstream cuts one:
+#
+#   G=git+https://github.com/dialohq/ocaml-grpc.git#b629b55fc15964c5e9455058725519d3f7cfc9a7
+#   opam pin add grpc "$G" && opam pin add grpc-lwt "$G"
+#
+# (The default branch is `main`, not `master`. That SHA is verified to build
+# against h2 0.13.0.) The socket transport in cometbft-lwt has no such
+# dependency, which is why it is the default and why it is a separate package.
+build: [["dune" "build" "-p" name "-j" jobs]]

@@ -1,0 +1,32 @@
+opam-version: "2.0"
+synopsis: "Unix entry points for the OCaml CometBFT ABCI server"
+description: """
+Instantiates the flow-generic servers in cometbft-lwt against Unix sockets,
+using mirage-flow-unix to supply the Mirage_flow.S the functors ask for. This
+is the package an ordinary (non-unikernel) OCaml application chain links
+against; it is also the only package in the repository allowed to depend on
+unix.
+
+Listens on TCP or a Unix domain socket, matching CometBFT's proxy_app settings
+(tcp://127.0.0.1:26658, unix:///tmp/abci.sock).
+"""
+maintainer: ["gilbahat"]
+authors: ["gilbahat"]
+license: "ISC"
+homepage: "https://github.com/reuna147/ocaml-cometbft"
+bug-reports: "https://github.com/reuna147/ocaml-cometbft/issues"
+dev-repo: "git+https://github.com/reuna147/ocaml-cometbft.git"
+depends: [
+  "ocaml" {>= "4.14"}
+  "dune" {>= "3.0"}
+  "cometbft-lwt" {= version}
+  "cometbft-grpc" {= version}
+  "lwt"
+  "mirage-flow-unix" {>= "4.0.0"}
+  "h2" {>= "0.13.0"}
+  "h2-lwt-unix" {>= "0.13.0"}
+  "grpc-lwt" {>= "0.2.0"}
+  "logs"
+  "alcotest" {with-test}
+]
+build: [["dune" "build" "-p" name "-j" jobs]]

@@ -1,0 +1,95 @@
+name: test
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        ocaml-compiler: ["5.2.1"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: ${{ matrix.ocaml-compiler }}
+          opam-local-packages: "*.opam"
+
+      # The released grpc.0.2.0 pins h2 < 0.13.0, which conflicts with the h2
+      # that makes the gRPC server work under MirageOS. See cometbft-lwt.opam.
+      - name: Pin ocaml-grpc
+        run: |
+          G=git+https://github.com/dialohq/ocaml-grpc.git#b629b55fc15964c5e9455058725519d3f7cfc9a7
+          opam pin add -y -n grpc "$G"
+          opam pin add -y -n grpc-lwt "$G"
+
+      - run: opam install -y --deps-only --with-test .
+
+      - run: opam exec -- dune build
+
+      - run: opam exec -- dune test
+
+      # Guards the MirageOS/Solo5 requirement: fails if unix reaches the core.
+      - name: Check Mirage safety
+        run: opam exec -- ./test/check-mirage-safe.sh
+
+  e2e:
+    # The test that actually matters: a real CometBFT node driving the app over
+    # both transports.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+
+      - name: Install cometbft
+        run: go install github.com/cometbft/cometbft/cmd/cometbft@v0.38.26
+
+      - uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: "5.2.1"
+          opam-local-packages: "*.opam"
+
+      - name: Pin ocaml-grpc
+        run: |
+          G=git+https://github.com/dialohq/ocaml-grpc.git#b629b55fc15964c5e9455058725519d3f7cfc9a7
+          opam pin add -y -n grpc "$G"
+          opam pin add -y -n grpc-lwt "$G"
+
+      - run: opam install -y --deps-only --with-test .
+      - run: opam exec -- dune build examples/kvstore/main.exe
+
+      - name: End-to-end over the ABCI socket transport
+        run: COMETBFT="$HOME/go/bin/cometbft" ./test/e2e.sh
+
+      - name: End-to-end over gRPC
+        run: TRANSPORT=grpc COMETBFT="$HOME/go/bin/cometbft" ./test/e2e.sh
+
+  mirage:
+    # The strong form of the MirageOS check: actually cross-compile the ABCI
+    # socket server into a Solo5 unikernel. Linux here (spt); the sptmac target
+    # is for macOS and needs the Solo5 fork that provides it.
+    #
+    # Currently expected to fail at the final link -- see mirage-smoke/README.md:
+    # an *empty* unikernel fails identically on the same toolchain, so the
+    # failure is Mirage's, not ours. Left non-blocking until that is fixed
+    # upstream; test/check-mirage-safe.sh is what guards the constraint per-push.
+    continue-on-error: true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: "5.2.1"
+          opam-local-packages: "*.opam"
+
+      - run: opam install -y mirage
+
+      - name: Cross-compile the unikernel for spt
+        run: TARGET=spt opam exec -- ./test/check-unikernel.sh
