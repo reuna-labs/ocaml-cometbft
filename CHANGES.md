@@ -1,4 +1,4 @@
-## v0.1.0 (unreleased)
+## v0.1.0~alpha1 (unreleased)
 
 First release: an OCaml SDK for ABCI 2.0.
 

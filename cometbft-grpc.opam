@@ -1,4 +1,5 @@
 opam-version: "2.0"
+version: "0.1.0~alpha1"
 synopsis: "The ABCI service over gRPC, for CometBFT applications"
 description: """
 Serves tendermint.abci.ABCI as an ordinary gRPC service, for nodes configured
@@ -34,14 +35,8 @@ depends: [
 # NOTE: the released grpc.0.2.0 constrains h2 to < 0.13.0, but h2 and h2-mirage
 # are both at 0.13.0, and h2-mirage is what makes a MirageOS gRPC server
 # possible. The commit lifting the bound ("Make it compiling with H2 v0.13.0",
-# 2025-07-10) is on ocaml-grpc's main branch and has never been released, so
-# until upstream cuts one:
-#
-#   G=git+https://github.com/dialohq/ocaml-grpc.git#b629b55fc15964c5e9455058725519d3f7cfc9a7
-#   opam pin add grpc "$G" && opam pin add grpc-lwt "$G"
-#
-# (The default branch is `main`, not `master`. That SHA is verified to build
-# against h2 0.13.0.) The socket transport in cometbft-lwt has no such
+# 2025-07-10) is included in the private reuna-labs 0.2.1 alpha staging
+# release. The socket transport in cometbft-lwt has no such
 # dependency, which is why it is the default and why it is a separate package.
 build: [["dune" "build" "-p" name "-j" jobs]]
 
@@ -50,11 +45,11 @@ build: [["dune" "build" "-p" name "-j" jobs]]
 # closure, not just its direct edges, or resolution fails with
 #   cometbft -> cometbft-proto unknown package
 pin-depends: [
-  [ "cometbft.dev" "git+https://github.com/reuna-labs/ocaml-cometbft.git#main" ]
-  [ "cometbft-proto.dev" "git+https://github.com/reuna-labs/ocaml-cometbft.git#main" ]
+  [ "cometbft.0.1.0~alpha1" "git+https://github.com/reuna-labs/ocaml-cometbft.git#main" ]
+  [ "cometbft-proto.0.1.0~alpha1" "git+https://github.com/reuna-labs/ocaml-cometbft.git#main" ]
   # The released grpc.0.2.0 caps h2 < 0.13.0; see the note above. This was
   # a comment telling the reader to run `opam pin add` by hand, which meant
   # every consumer had to know. Now it resolves on its own.
-  [ "grpc.0.2.0" "git+https://github.com/dialohq/ocaml-grpc.git#b629b55fc15964c5e9455058725519d3f7cfc9a7" ]
-  [ "grpc-lwt.0.2.0" "git+https://github.com/dialohq/ocaml-grpc.git#b629b55fc15964c5e9455058725519d3f7cfc9a7" ]
+  [ "grpc.0.2.1~alpha1" "git+https://github.com/reuna-labs/ocaml-grpc.git#4dc74e8" ]
+  [ "grpc-lwt.0.2.1~alpha1" "git+https://github.com/reuna-labs/ocaml-grpc.git#4dc74e8" ]
 ]

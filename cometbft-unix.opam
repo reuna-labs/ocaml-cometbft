@@ -1,4 +1,5 @@
 opam-version: "2.0"
+version: "0.1.0~alpha1"
 synopsis: "Unix entry points for the OCaml CometBFT ABCI server"
 description: """
 Instantiates the flow-generic servers in cometbft-lwt against Unix sockets,
@@ -36,13 +37,13 @@ build: [["dune" "build" "-p" name "-j" jobs]]
 # closure, not just its direct edges, or resolution fails with
 #   cometbft -> cometbft-proto unknown package
 pin-depends: [
-  [ "cometbft.dev" "git+https://github.com/reuna-labs/ocaml-cometbft.git#main" ]
-  [ "cometbft-proto.dev" "git+https://github.com/reuna-labs/ocaml-cometbft.git#main" ]
-  [ "cometbft-lwt.dev" "git+https://github.com/reuna-labs/ocaml-cometbft.git#main" ]
-  [ "cometbft-grpc.dev" "git+https://github.com/reuna-labs/ocaml-cometbft.git#main" ]
+  [ "cometbft.0.1.0~alpha1" "git+https://github.com/reuna-labs/ocaml-cometbft.git#main" ]
+  [ "cometbft-proto.0.1.0~alpha1" "git+https://github.com/reuna-labs/ocaml-cometbft.git#main" ]
+  [ "cometbft-lwt.0.1.0~alpha1" "git+https://github.com/reuna-labs/ocaml-cometbft.git#main" ]
+  [ "cometbft-grpc.0.1.0~alpha1" "git+https://github.com/reuna-labs/ocaml-cometbft.git#main" ]
   # The released grpc.0.2.0 caps h2 < 0.13.0; see the note above. This was
   # a comment telling the reader to run `opam pin add` by hand, which meant
   # every consumer had to know. Now it resolves on its own.
-  [ "grpc.0.2.0" "git+https://github.com/dialohq/ocaml-grpc.git#b629b55fc15964c5e9455058725519d3f7cfc9a7" ]
-  [ "grpc-lwt.0.2.0" "git+https://github.com/dialohq/ocaml-grpc.git#b629b55fc15964c5e9455058725519d3f7cfc9a7" ]
+  [ "grpc.0.2.1~alpha1" "git+https://github.com/reuna-labs/ocaml-grpc.git#4dc74e8" ]
+  [ "grpc-lwt.0.2.1~alpha1" "git+https://github.com/reuna-labs/ocaml-grpc.git#4dc74e8" ]
 ]

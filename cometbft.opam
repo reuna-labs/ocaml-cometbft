@@ -1,4 +1,5 @@
 opam-version: "2.0"
+version: "0.1.0~alpha1"
 synopsis: "ABCI 2.0 protocol core for CometBFT applications, free of I/O"
 description: """
 The transport-independent half of the OCaml CometBFT SDK:
@@ -38,5 +39,5 @@ build: [["dune" "build" "-p" name "-j" jobs]]
 # closure, not just its direct edges, or resolution fails with
 #   cometbft -> cometbft-proto unknown package
 pin-depends: [
-  [ "cometbft-proto.dev" "git+https://github.com/reuna-labs/ocaml-cometbft.git#main" ]
+  [ "cometbft-proto.0.1.0~alpha1" "git+https://github.com/reuna-labs/ocaml-cometbft.git#main" ]
 ]
