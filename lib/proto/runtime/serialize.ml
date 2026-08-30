@@ -33,9 +33,10 @@ let write_fixed64 ~f v = Writer.write_fixed64_value (f v)
 let write_fixed32 ~f v = Writer.write_fixed32_value (f v)
 
 let encode_zigzag v =
-  let open Infix.Int64 in
-  let v = match v < 0L with true -> (v lsl 1) lxor -1L | false -> v lsl 1 in
-  v
+  let shifted = Int64.shift_left v 1 in
+  match v < 0L with
+  | true -> Int64.logxor shifted (-1L)
+  | false -> shifted
 
 let encode_zigzag_unboxed v =
   let v = match v < 0 with true -> (v lsl 1) lxor -1 | false -> v lsl 1 in

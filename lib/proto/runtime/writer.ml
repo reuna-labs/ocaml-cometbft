@@ -49,14 +49,14 @@ let unused_space t =
 let write_varint buffer ~offset v =
   let rec inner ~offset v =
     let next_offset = offset + 1 in
-    let open Infix.Int64 in
-    match v lsr 7 with
+    match Int64.shift_right_logical v 7 with
     | 0L ->
         Bytes.unsafe_set buffer offset (Int64.to_int v |> Char.unsafe_chr);
         next_offset
     | rem ->
         Bytes.unsafe_set buffer offset
-          (v land 0x7fL lor 0b1000_0000L |> Int64.to_int |> Char.unsafe_chr);
+          (Int64.logor (Int64.logand v 0x7fL) 0b1000_0000L
+          |> Int64.to_int |> Char.unsafe_chr);
         inner ~offset:next_offset rem
   in
   (inner [@unrolled 10]) ~offset v

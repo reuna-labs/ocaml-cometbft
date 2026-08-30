@@ -59,10 +59,10 @@ let error_required_field_missing index spec =
   Result.raise (`Required_field_missing (index, Spec.show spec))
 
 let decode_zigzag v =
-  let open Infix.Int64 in
-  match v land 0x01L = 0L with
-  | true -> v lsr 1
-  | false -> ((v lsr 1) * -1L) - 1L
+  let shifted = Int64.shift_right_logical v 1 in
+  match Int64.logand v 0x01L = 0L with
+  | true -> shifted
+  | false -> Int64.sub (Int64.mul shifted (-1L)) 1L
 
 let decode_zigzag_unboxed v =
   match v land 0x01 = 0 with true -> v lsr 1 | false -> ((v lsr 1) * -1) - 1

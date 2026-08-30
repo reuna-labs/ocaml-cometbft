@@ -52,11 +52,12 @@ let read_byte t =
 [@@inline]
 
 let read_varint t =
-  let open Infix.Int64 in
   let rec inner acc bit =
     let v = read_byte t |> Int64.of_int in
-    let acc = acc lor ((v land 0x7fL) lsl bit) in
-    match v land 0x80L = 0x80L with
+    let acc =
+      Int64.logor acc (Int64.shift_left (Int64.logand v 0x7fL) bit)
+    in
+    match Int64.logand v 0x80L = 0x80L with
     | true -> inner acc (Int.add bit 7)
     | false -> acc
   in
