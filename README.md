@@ -10,9 +10,22 @@ protocol. This library provides it.
 
 ## Status
 
-Early, but real: a stock `cometbft` node drives the example application to
-consensus over **both** transports, including restart-and-replay. See
-`test/e2e.sh`.
+Public, unaudited `v0.1.0-alpha2`: a stock `cometbft` node drives the example
+application to consensus over **both** transports, including
+restart-and-replay. See `test/e2e.sh`. Do not use this alpha as an unaudited
+production consensus boundary.
+See [SECURITY.md](SECURITY.md) for private reporting and the review boundary.
+
+## Install
+
+```sh
+opam repository add reuna https://github.com/reuna-labs/opam-repository.git
+opam update
+opam install cometbft-unix.0.1.0~alpha2
+```
+
+The package and its protobuf/flow siblings come from checksum-pinned public
+release archives; no development pins are required.
 
 ## Your first ABCI application
 
